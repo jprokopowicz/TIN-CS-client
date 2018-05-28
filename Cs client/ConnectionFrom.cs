@@ -1,11 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Net.Sockets;
 using System.Net;
@@ -16,6 +9,7 @@ namespace TIN
     {
         public ConnectionFrom()
         {
+            this.MaximizeBox = false;
             InitializeComponent();
         }
 
@@ -31,7 +25,7 @@ namespace TIN
             int port;
             IPAddress serverIP;
             Socket socket;
-           
+
             try{
                 serverAddress = textBox1.Text;
                 if (serverAddress == "localhost")
@@ -50,7 +44,7 @@ namespace TIN
                     return;
                 }
             }
-            catch(FormatException){
+            catch(Exception){
                 MessageBox.Show("Invalid port");
                 return;
             }
@@ -66,8 +60,10 @@ namespace TIN
                 MessageBox.Show("Connection error");
                 //return;
             }
-            Client client = new Client(socket);
+            Client client = new Client(socket,this,serverIP, port);
+            this.Enabled = false;
             client.Show();
+            //this.Enabled = true;
         }
 
         private static string GetLocalIPAddress()
