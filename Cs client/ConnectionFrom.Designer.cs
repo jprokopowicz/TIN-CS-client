@@ -71,7 +71,7 @@
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(195, 17);
             this.label3.TabIndex = 3;
-            this.label3.Text = "Please insert connection data";
+            this.label3.Text = "Please insert connManager data";
             // 
             // textBox1
             // 
@@ -99,7 +99,7 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.button1);
             this.Name = "ConnectionFrom";
-            this.Text = "Client Connection";
+            this.Text = "Client ConnectionMenager";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.ResumeLayout(false);
             this.PerformLayout();

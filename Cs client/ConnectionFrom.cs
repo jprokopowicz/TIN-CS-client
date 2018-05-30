@@ -24,7 +24,7 @@ namespace TIN
             String serverAddress;
             int port;
             IPAddress serverIP;
-            Connection connection;
+            ConnectionMenager connection;
             try{
                 serverAddress = textBox1.Text;
                 if (serverAddress == "localhost")
@@ -48,16 +48,16 @@ namespace TIN
                 return;
             }
 
-            connection = new Connection(serverIP, port);
             try
             {
+                connection = new ConnectionMenager(serverIP, port);
                 connection.Connect();
                 Client client = new Client(connection, this, serverIP, port);
                 this.Enabled = false;
                 client.Show();
             }
             catch(SocketException){
-                MessageBox.Show("Connection error");
+                MessageBox.Show("ConnectionMenager error");
             }
            
         }
