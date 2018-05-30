@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
@@ -8,33 +9,41 @@ namespace TIN
 {
     public class ConnectionMenager
     {
-        private Socket socket;
         private IPAddress address;
         private int port;
-        private Thread reciveThread;
-        private int maxSize = 512;
-        private byte[] buffer;
 
-        
+        private Thread reciveThread;
+        private Connection connection;
+        private DataConverter converter;
 
         public ConnectionMenager(IPAddress address_, int port_)
         {
             address = address_;
             port = port_;
-            buffer = new byte[maxSize];
-            socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            //buffer = new byte[maxSize];
+            connection = new Connection(address,port);
+            //socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
         }
         public void Connect()
         {
-            reciveThread = new Thread(reciveThreadFunction);
-            reciveThread.Start();
+
+                reciveThread = new Thread(reciveThreadFunction);
+            try
+            {
+                connection.Connect();
+                reciveThread.Start();
+            }
+            catch(Exception exc)
+            {
+                throw exc;
+            }
         }
 
         public void Disconnect()
         {
             try
             {
-                    socket.Disconnect(true);
+                connection.Disconnect();
             }
             catch(Exception e)
             {
@@ -42,25 +51,21 @@ namespace TIN
             }
         }
 
-        public void Send(byte[] image)
+        public void Send(Image image)
         {
-            int result = socket.Send(image);
-            MessageBox.Show(result.ToString());
+            connection.Send(converter.ConvertToBuffer(image));
         }
 
         private void reciveThreadFunction()
         {
-            socket.Connect(address, port);
             MessageBox.Show("Connected");
-
-        
             try
             {
-                
+                var buffer = converter.GenerateBuffer();
                 while (true)
                 {
-                    MessageBox.Show("before recive");
-                    int result = socket.Receive(buffer);
+                    //MessageBox.Show("before recive");
+                    int result = connection.Recive(buffer);
                     if (result == 0)
                     {//TODO: opracowac procedure dla rozłączania serwera
                         break;
@@ -68,7 +73,7 @@ namespace TIN
                     }
                     EventArgs args = new EventArgs();
 
-                    byte[] transferBuffer = CopyBuffer(buffer);
+                    var transferBuffer = converter.CopyBuffer(buffer);
 
                     MessageBox.Show("Recived " + result.ToString() + " bytes");
                 } 
@@ -79,14 +84,7 @@ namespace TIN
             }
         }
 
-        //TODO: replace
-        private byte[] CopyBuffer(byte[] sorce)
-        {
-            byte[] result = new byte[maxSize];
-            for(int i = 0; i < maxSize; ++i){
-                result[i] = sorce[i];
-            }
-            return result;
-        } 
+
+        
     }
 }

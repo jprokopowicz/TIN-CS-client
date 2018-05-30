@@ -9,10 +9,10 @@ namespace TIN
     {
         public ConnectionFrom()
         {
-            this.MaximizeBox = false;
+            //this.MaximizeBox = false;
             InitializeComponent();
         }
-
+        
          private void Form1_Load(object sender, EventArgs e)
         {
 
@@ -24,11 +24,11 @@ namespace TIN
             String serverAddress;
             int port;
             IPAddress serverIP;
-            ConnectionMenager connection;
+            //ConnectionMenager connManager;
             try{
                 serverAddress = textBox1.Text;
                 if (serverAddress == "localhost")
-                    serverAddress = GetLocalIPAddress();
+                    serverAddress = Connection.GetLocalIPAddress();
                 serverIP = IPAddress.Parse(serverAddress);
             }
             catch (FormatException){
@@ -38,10 +38,8 @@ namespace TIN
            
             try{
                 port = Int32.Parse(textBox2.Text);
-                if (port < 1024 || port > 65535){
-                    MessageBox.Show("Invalid port");
-                    return;
-                }
+                if (port < 1024 || port > 65535)
+                    throw new Exception();
             }
             catch(Exception){
                 MessageBox.Show("Invalid port");
@@ -50,31 +48,14 @@ namespace TIN
 
             try
             {
-                connection = new ConnectionMenager(serverIP, port);
-                connection.Connect();
-                Client client = new Client(connection, this, serverIP, port);
+                Client client = new Client(this, serverIP, port);
                 this.Enabled = false;
                 client.Show();
             }
             catch(SocketException){
-                MessageBox.Show("ConnectionMenager error");
+                MessageBox.Show("Connection error");
             }
            
-        }
-
-        private static string GetLocalIPAddress()
-        {
-            IPHostEntry host;
-            string localIP = "?";
-            host = Dns.GetHostEntry(Dns.GetHostName());
-            foreach (IPAddress ip in host.AddressList)
-            {
-                if (ip.AddressFamily == AddressFamily.InterNetwork)
-                {
-                    localIP = ip.ToString();
-                }
-            }
-            return localIP;
         }
     }
 }

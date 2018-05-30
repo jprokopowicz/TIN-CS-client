@@ -8,25 +8,30 @@ namespace TIN
 {
     public partial class Client : Form
     {
-        /// <summary>
-        /// ConnectionMenager socket
-        /// </summary>
+
         private ConnectionMenager connManager;
 
         private ConnectionFrom connForm;
 
         private Image toSendImage;
 
-        public event EventHandler<byte[]> ReciveEvent;
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="serverIP_"> server IP </param>
         /// <param name="port_"> connManager port </param>
         /// <param name="socket_"> connManager socket </param>
-        public Client(ConnectionMenager connManager_, ConnectionFrom connForm_, IPAddress ip_, int port_)
+        public Client(/*ConnectionMenager connManager_,*/ ConnectionFrom connForm_, IPAddress ip_, int port_)
         {
-            connManager = connManager_;
+            try
+            {
+                connManager = new ConnectionMenager(ip_, port_);
+            }
+            catch(Exception exc)
+            {
+                throw exc;
+            }
+            connManager.Connect();
             connForm = connForm_;
             toSendImage = null;
             InitializeComponent();
@@ -50,7 +55,7 @@ namespace TIN
                 String imagePath = fInfo.Directory.ToString();
                 String imageName = fInfo.Name.ToString();
                 toSendImage= Image.FromStream(imageStream);
-                imageBox.Image = toSendImage;
+                //imageBox.Image = toSendImage;
                 pictureNameLabel.Text = imagePath + "\\" + imageName; 
             }
             catch(Exception exc)
@@ -87,8 +92,8 @@ namespace TIN
             {
                 if (toSendImage == null)
                     throw new Exception("No selected image");
-                byte[] imageBuffer = ImageToByteArray(toSendImage);
-                connManager.Send(imageBuffer);
+                //byte[] imageBuffer = ImageToByteArray(toSendImage);
+                connManager.Send(toSendImage);
             }
             catch(Exception exc)
             {
@@ -103,13 +108,6 @@ namespace TIN
                 imageIn.Save(ms, imageIn.RawFormat);
                 return ms.ToArray();
             }
-        }
-
-        public virtual void OnReciveEvent(byte[] buff)
-        {
-            if (ReciveEvent != null)
-                ReciveEvent(connManager, buff);
-            MessageBox.Show("get");
         }
     }
 }

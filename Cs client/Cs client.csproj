@@ -45,6 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Cipher.cs" />
     <Compile Include="Client.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -59,7 +60,7 @@
       <DependentUpon>ConnectionFrom.cs</DependentUpon>
     </Compile>
     <Compile Include="ConnectionManager.cs" />
-    <Compile Include="Converter.cs" />
+    <Compile Include="DataConverter.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Client.resx">
