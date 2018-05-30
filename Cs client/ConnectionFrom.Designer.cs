@@ -36,7 +36,7 @@
             this.textBox2 = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
-            // button1
+            // OpenButton
             // 
             this.button1.Location = new System.Drawing.Point(250, 150);
             this.button1.Name = "button1";
@@ -44,7 +44,7 @@
             this.button1.TabIndex = 0;
             this.button1.Text = "connect";
             this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.button1.Click += new System.EventHandler(this.OpenButton_Click);
             // 
             // label1
             // 

@@ -73,6 +73,7 @@ namespace TIN
             this.sendButton.TabIndex = 2;
             this.sendButton.Text = "send";
             this.sendButton.UseVisualStyleBackColor = true;
+            this.sendButton.Click += new System.EventHandler(this.sendButton_Click);
             // 
             // sendPictureLabel
             // 

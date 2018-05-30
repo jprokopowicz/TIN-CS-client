@@ -12,30 +12,26 @@ namespace TIN
         /// <summary>
         /// Connection socket
         /// </summary>
-        private Socket socket;
+        private Connection connection;
 
         private ConnectionFrom connForm;
 
-        private Stream imageStream;
+        private Image toSendImage;
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="serverIP_"> server IP </param>
         /// <param name="port_"> connection port </param>
         /// <param name="socket_"> connection socket </param>
-        public Client(Socket socket_, ConnectionFrom connForm_, IPAddress ip_, int port_)
+        public Client(Connection connection_, ConnectionFrom connForm_, IPAddress ip_, int port_)
         {
-            socket = socket_;
+            connection = connection_;
             connForm = connForm_;
+            toSendImage = null;
             InitializeComponent();
             IPLabel.Text = ip_.ToString();
             PortLabel.Text = port_.ToString();
-
-        }
-
-        private void button4_Click(object sender, EventArgs e)
-        {
-
+            this.MaximizeBox = false;
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -47,17 +43,13 @@ namespace TIN
             fileWindow.ShowDialog();
             try
             {
-                imageStream = fileWindow.OpenFile();
+                Stream imageStream = fileWindow.OpenFile();
                 FileInfo fInfo = new FileInfo(fileWindow.FileName);
 
                 String imagePath = fInfo.Directory.ToString();
                 String imageName = fInfo.Name.ToString();
-                //if(fInfo.Length > MAXSIZE)
-                //TODO sprawdzenie rozmiaru
-                //
-                Image image = Image.FromStream(imageStream);
+                toSendImage= Image.FromStream(imageStream);
 
-                imageBox.Image = image;
                 pictureNameLabel.Text = imagePath + "\\" + imageName; 
             }
             catch(Exception exc)
@@ -75,16 +67,40 @@ namespace TIN
         {
             try
             {
-                socket.Disconnect(true);
+                connection.Disconnect();
+                MessageBox.Show("disconnected");
             }
             catch (Exception exc)
             {
-                MessageBox.Show(exc.Message);
+                MessageBox.Show("disconnect error" + exc.Message);
             }
             finally
             {
-                MessageBox.Show("disconnected");
                 this.Close();
+            }
+        }
+
+        private void sendButton_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (toSendImage == null)
+                    throw new Exception("No selected image");
+                byte[] imageBuffer = ImageToByteArray(toSendImage);
+                connection.Send(imageBuffer);
+            }
+            catch(Exception exc)
+            {
+                MessageBox.Show(exc.Message);
+            }
+        }
+
+        private byte[] ImageToByteArray(Image imageIn)
+        {
+            using (var ms = new MemoryStream())
+            {
+                imageIn.Save(ms, imageIn.RawFormat);
+                return ms.ToArray();
             }
         }
     }

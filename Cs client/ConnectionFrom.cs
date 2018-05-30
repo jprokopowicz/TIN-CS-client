@@ -18,14 +18,13 @@ namespace TIN
 
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void OpenButton_Click(object sender, EventArgs e)
         {
 
             String serverAddress;
             int port;
             IPAddress serverIP;
-            Socket socket;
-
+            Connection connection;
             try{
                 serverAddress = textBox1.Text;
                 if (serverAddress == "localhost")
@@ -49,21 +48,18 @@ namespace TIN
                 return;
             }
 
-            MessageBox.Show("adress: " + serverAddress + " port: " + port);
-            socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            connection = new Connection(serverIP, port);
             try
-            {  
-                socket.Connect(serverIP, port);
-               
+            {
+                connection.Connect();
+                Client client = new Client(connection, this, serverIP, port);
+                this.Enabled = false;
+                client.Show();
             }
             catch(SocketException){
                 MessageBox.Show("Connection error");
-                //return;
             }
-            Client client = new Client(socket,this,serverIP, port);
-            this.Enabled = false;
-            client.Show();
-            //this.Enabled = true;
+           
         }
 
         private static string GetLocalIPAddress()

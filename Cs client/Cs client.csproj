@@ -57,7 +57,7 @@
     <Compile Include="ConnectionFrom.Designer.cs">
       <DependentUpon>ConnectionFrom.cs</DependentUpon>
     </Compile>
-    <Compile Include="ConnectionLayer.cs" />
+    <Compile Include="Connection.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Client.resx">
