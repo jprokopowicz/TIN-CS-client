@@ -11,23 +11,22 @@ namespace TIN
     {
         private IPAddress address;
         private int port;
+        PictureBox recivedImage;
 
         private Thread reciveThread;
         private Connection connection;
-        private DataConverter converter;
 
-        public ConnectionMenager(IPAddress address_, int port_)
+        public ConnectionMenager(IPAddress address_, int port_, PictureBox recivedImage_)
         {
             address = address_;
             port = port_;
-            //buffer = new byte[maxSize];
+            recivedImage = recivedImage_;
             connection = new Connection(address,port);
-            //socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
         }
         public void Connect()
         {
 
-                reciveThread = new Thread(reciveThreadFunction);
+            reciveThread = new Thread(reciveThreadFunction);
             try
             {
                 connection.Connect();
@@ -53,7 +52,7 @@ namespace TIN
 
         public void Send(Image image)
         {
-            connection.Send(converter.ConvertToBuffer(image));
+            connection.Send(DataConverter.ConvertToBuffer(image));
         }
 
         private void reciveThreadFunction()
@@ -61,19 +60,17 @@ namespace TIN
             MessageBox.Show("Connected");
             try
             {
-                var buffer = converter.GenerateBuffer();
+                var buffer = DataConverter.GenerateBuffer(DataConverter.maxSize);
                 while (true)
                 {
-                    //MessageBox.Show("before recive");
                     int result = connection.Recive(buffer);
                     if (result == 0)
-                    {//TODO: opracowac procedure dla rozłączania serwera
+                    {
+                        Disconnect();
                         break;
-                        // locker.WaitOne();
                     }
-                    EventArgs args = new EventArgs();
 
-                    var transferBuffer = converter.CopyBuffer(buffer);
+                    recivedImage.Image = DataConverter.ConvertToImage(buffer);
 
                     MessageBox.Show("Recived " + result.ToString() + " bytes");
                 } 

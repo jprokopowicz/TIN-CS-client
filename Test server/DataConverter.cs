@@ -2,11 +2,11 @@
 using System.Drawing;
 using System.IO;
 
-namespace TIN
+namespace TINtest
 {
     static class DataConverter
     {
-        public static int maxSize = 786486; 
+        public static int maxSize = 786486;
 
         public static byte[] GenerateBuffer(int size)
         {
@@ -20,7 +20,7 @@ namespace TIN
             byte[] result;
             using (var ms = new MemoryStream())
             {
-                image.Save(ms, image.RawFormat);    
+                image.Save(ms, image.RawFormat);
                 result = ms.ToArray();
             }
             return result;
@@ -33,7 +33,7 @@ namespace TIN
             Image result;
             using (var ms = new MemoryStream(buffer))
             {
-                
+
                 result = Image.FromStream(ms);
             }
 

@@ -54,6 +54,7 @@ namespace TIN
             this.imageBox.Size = new System.Drawing.Size(512, 512);
             this.imageBox.TabIndex = 0;
             this.imageBox.TabStop = false;
+            this.imageBox.Paint += new System.Windows.Forms.PaintEventHandler(this.imageBox_Paint);
             // 
             // openButton
             // 

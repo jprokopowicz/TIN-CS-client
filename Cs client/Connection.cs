@@ -4,7 +4,7 @@ using System;
 
 namespace TIN
 {
-    class Connection
+    public class Connection
     {
         Socket socket;
         IPAddress address;

@@ -23,18 +23,12 @@ namespace TIN
         /// <param name="socket_"> connManager socket </param>
         public Client(/*ConnectionMenager connManager_,*/ ConnectionFrom connForm_, IPAddress ip_, int port_)
         {
-            try
-            {
-                connManager = new ConnectionMenager(ip_, port_);
-            }
-            catch(Exception exc)
-            {
-                throw exc;
-            }
+            InitializeComponent();
+
+            connManager = new ConnectionMenager(ip_, port_, imageBox);
             connManager.Connect();
             connForm = connForm_;
             toSendImage = null;
-            InitializeComponent();
             IPLabel.Text = ip_.ToString();
             PortLabel.Text = port_.ToString();
             this.MaximizeBox = false;
@@ -108,6 +102,11 @@ namespace TIN
                 imageIn.Save(ms, imageIn.RawFormat);
                 return ms.ToArray();
             }
+        }
+
+        private void imageBox_Paint(object sender, PaintEventArgs e)
+        {
+            imageBox.Show();
         }
     }
 }
