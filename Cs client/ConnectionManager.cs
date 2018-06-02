@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Drawing;
 using System.Net;
-using System.Net.Sockets;
 using System.Threading;
 using System.Windows.Forms;
 
@@ -15,6 +14,7 @@ namespace TIN
 
         private Thread reciveThread;
         private Connection connection;
+        private Encryptor encryptor;
 
         public ConnectionMenager(IPAddress address_, int port_, PictureBox recivedImage_)
         {
@@ -22,6 +22,7 @@ namespace TIN
             port = port_;
             recivedImage = recivedImage_;
             connection = new Connection(address,port);
+            encryptor = new Encryptor();
         }
         public void Connect()
         {
@@ -52,7 +53,16 @@ namespace TIN
 
         public void Send(Image image)
         {
-            connection.Send(DataConverter.ConvertToBuffer(image));
+            ///
+            Encryptor encryptor = new Encryptor();
+            var keyData = encryptor.GetKey();
+
+            var buffer = DataConverter.ConvertToBuffer(image);
+
+            var encriptedBuffer = encryptor.Encrypt(buffer, keyData.Item1, keyData.Item2);
+
+            ///
+            connection.Send(encriptedBuffer);
         }
 
         private void reciveThreadFunction()
@@ -63,16 +73,20 @@ namespace TIN
                 var buffer = DataConverter.GenerateBuffer(DataConverter.maxSize);
                 while (true)
                 {
-                    int result = connection.Recive(buffer);
-                    if (result == 0)
+                    int n = connection.Recive(buffer);
+                    if (n == 0)
                     {
                         Disconnect();
                         break;
                     }
 
-                    recivedImage.Image = DataConverter.ConvertToImage(buffer);
+                    var keyData = encryptor.GetKey();
+                    var encryptedBuffer = DataConverter.CopyBuffer(buffer, n);
+                    var decryptedBuffer = encryptor.Decrypt(encryptedBuffer, keyData.Item1, keyData.Item2);
 
-                    MessageBox.Show("Recived " + result.ToString() + " bytes");
+                    recivedImage.Image = DataConverter.ConvertToImage(decryptedBuffer);
+
+                    MessageBox.Show("Recived " + n.ToString() + " bytes");
                 } 
             }
             catch (Exception exc)

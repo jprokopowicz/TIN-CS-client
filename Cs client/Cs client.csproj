@@ -45,7 +45,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Cipher.cs" />
     <Compile Include="Client.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -61,6 +60,7 @@
     </Compile>
     <Compile Include="ConnectionManager.cs" />
     <Compile Include="DataConverter.cs" />
+    <Compile Include="Encryptor.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Client.resx">
@@ -88,6 +88,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <None Include="Resources\key.bin" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

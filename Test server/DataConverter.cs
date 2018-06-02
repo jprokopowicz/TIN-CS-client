@@ -15,29 +15,24 @@ namespace TINtest
 
         public static byte[] ConvertToBuffer(Image image)
         {
-            /*if (ms.Length > maxSize)
-                throw new Exception("Too big image");*/
-            byte[] result;
+
             using (var ms = new MemoryStream())
             {
+                if (ms.Length > maxSize)
+                    throw new Exception("Too big image");
                 image.Save(ms, image.RawFormat);
-                result = ms.ToArray();
+                return ms.ToArray();
             }
-            return result;
         }
 
         public static Image ConvertToImage(byte[] buffer)
         {
-            /*if (ms.Length > maxSize)
-                    throw new Exception("Too big image");*/
-            Image result;
             using (var ms = new MemoryStream(buffer))
             {
-
-                result = Image.FromStream(ms);
+                if (ms.Length > maxSize)
+                    throw new Exception("Too big image");
+                return Image.FromStream(ms);
             }
-
-            return result;
         }
 
         public static byte[] CopyBuffer(byte[] sorce, int size)

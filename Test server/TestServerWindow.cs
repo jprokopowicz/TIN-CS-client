@@ -97,14 +97,22 @@ namespace TINtest
                         launched = false;
                         break;
                     }
+                    ///
+                    Encryptor encryptor = new Encryptor();
 
-                    Image image = DataConverter.ConvertToImage(DataConverter.CopyBuffer(buffor, n));
+                    var keyData = encryptor.GetKey();
+
+                    var encriptedBuffor = DataConverter.CopyBuffer(buffor, n);
+
+                    var decryptedBuffer = encryptor.Decrypt(encriptedBuffor, keyData.Item1, keyData.Item2);
+                    ///
+                    Image image = DataConverter.ConvertToImage(decryptedBuffer);
                     pictureBox1.Image = image;
                     MessageBox.Show("recived " + n + " bytes");
 
-                    byte[] toSendBuffer = DataConverter.CopyBuffer(buffor, n);
+                    byte[] toSendBuffer = encryptor.Encrypt(decryptedBuffer, keyData.Item1, keyData.Item2);
+
                     connctionSocket.Send(toSendBuffer);
-                    
                 }
                 catch (Exception exc)
                 {

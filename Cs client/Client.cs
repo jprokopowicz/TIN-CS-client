@@ -49,7 +49,7 @@ namespace TIN
                 String imagePath = fInfo.Directory.ToString();
                 String imageName = fInfo.Name.ToString();
                 toSendImage= Image.FromStream(imageStream);
-                //imageBox.Image = toSendImage;
+                
                 pictureNameLabel.Text = imagePath + "\\" + imageName; 
             }
             catch(Exception exc)
@@ -86,7 +86,6 @@ namespace TIN
             {
                 if (toSendImage == null)
                     throw new Exception("No selected image");
-                //byte[] imageBuffer = ImageToByteArray(toSendImage);
                 connManager.Send(toSendImage);
             }
             catch(Exception exc)

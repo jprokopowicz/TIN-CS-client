@@ -15,29 +15,24 @@ namespace TIN
 
         public static byte[] ConvertToBuffer(Image image)
         {
-            /*if (ms.Length > maxSize)
-                throw new Exception("Too big image");*/
-            byte[] result;
+            
             using (var ms = new MemoryStream())
             {
+                if (ms.Length > maxSize)
+                    throw new Exception("Too big image");
                 image.Save(ms, image.RawFormat);    
-                result = ms.ToArray();
+                return ms.ToArray();
             }
-            return result;
         }
 
         public static Image ConvertToImage(byte[] buffer)
         {
-            /*if (ms.Length > maxSize)
-                    throw new Exception("Too big image");*/
-            Image result;
             using (var ms = new MemoryStream(buffer))
             {
-                
-                result = Image.FromStream(ms);
+                if (ms.Length > maxSize)
+                    throw new Exception("Too big image"); 
+                return Image.FromStream(ms);
             }
-
-            return result;
         }
 
         public static byte[] CopyBuffer(byte[] sorce, int size)
@@ -47,6 +42,29 @@ namespace TIN
             {
                 result[i] = sorce[i];
             }
+            return result;
+        }
+
+        public static byte[] ConnectBuffors(byte[][] sorce, int amount)
+        {
+            int length = 0;
+            for(int i = 0; i < amount; ++i)
+            {
+                length += sorce[i].Length;
+            }
+
+            byte[] result = new byte[length];
+
+            int copied = 0;
+            for(int i = 0; i < amount; ++i)
+            {
+                for(int j = 0; j < sorce[i].Length; ++j)
+                {
+                    result[copied + j] = sorce[i][j];
+                }
+                copied += sorce[i].Length;
+            }
+
             return result;
         }
     }
