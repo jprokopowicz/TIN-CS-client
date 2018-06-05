@@ -30,6 +30,7 @@ namespace TIN
 
         public void Disconnect()
         {
+            socket.Shutdown(SocketShutdown.Both);
             socket.Disconnect(true);
         }
 

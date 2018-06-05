@@ -54,12 +54,13 @@ namespace TIN
             }
             catch(Exception exc)
             {
-                MessageBox.Show(exc.Message);
+                //MessageBox.Show(exc.Message);
             }
         }
 
         private void Client_FormClosing(object sender, FormClosingEventArgs e)
         {
+            connManager.Disconnect();
             connForm.Enabled = true;
         }
 
@@ -68,6 +69,7 @@ namespace TIN
             try
             {
                 connManager.Disconnect();
+                Close();
                 MessageBox.Show("disconnected");
             }
             catch (Exception exc)
@@ -84,8 +86,8 @@ namespace TIN
         {
             try
             {
-                if (toSendImage == null)
-                    throw new Exception("No selected image");
+               /* if (toSendImage == null)
+                    throw new Exception("No selected image");*/
                 connManager.Send(toSendImage);
             }
             catch(Exception exc)

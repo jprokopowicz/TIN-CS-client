@@ -35,7 +35,7 @@ namespace TIN
             try
             {
                 BinaryReader binaryReader = new BinaryReader(File.Open(fileName, FileMode.Open));
-                for(int i = 0; i < keyLength; ++i)
+                for (int i = 0; i < keyLength; ++i)
                 {
                     key[i] = binaryReader.ReadByte();
                 }
@@ -46,7 +46,7 @@ namespace TIN
                 }
                 binaryReader.Close();
             }
-            catch(Exception exc)
+            catch (Exception exc)
             {
                 throw new Exception("Getting key exception: " + exc.Message);
             }
@@ -56,12 +56,14 @@ namespace TIN
 
         public byte[] Encrypt(byte[] source, byte[] key, byte[] IV)
         {
-     
+
             byte[] encrypted; ;
             using (MemoryStream mstream = new MemoryStream())
             {
                 using (AesCryptoServiceProvider aesProvider = new AesCryptoServiceProvider())
                 {
+                    aesProvider.Mode = CipherMode.CBC;
+                    aesProvider.Padding = PaddingMode.PKCS7;
                     using (CryptoStream cryptoStream = new CryptoStream(mstream, aesProvider.CreateEncryptor(key, IV), CryptoStreamMode.Write))
                     {
                         cryptoStream.Write(source, 0, source.Length);
@@ -74,7 +76,7 @@ namespace TIN
 
         public byte[] Decrypt(byte[] sorce, byte[] key, byte[] IV)
         {
-          
+
             byte[] result;
             int count;
             using (MemoryStream mStream = new MemoryStream(sorce))
@@ -82,6 +84,7 @@ namespace TIN
                 using (AesCryptoServiceProvider aesProvider = new AesCryptoServiceProvider())
                 {
                     aesProvider.Mode = CipherMode.CBC;
+                    aesProvider.Padding = PaddingMode.PKCS7;
                     using (CryptoStream cryptoStream = new CryptoStream(mStream,
                     aesProvider.CreateDecryptor(key, IV), CryptoStreamMode.Read))
                     {

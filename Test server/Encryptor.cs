@@ -56,12 +56,14 @@ namespace TINtest
 
         public byte[] Encrypt(byte[] source, byte[] key, byte[] IV)
         {
-     
+
             byte[] encrypted; ;
             using (MemoryStream mstream = new MemoryStream())
             {
                 using (AesCryptoServiceProvider aesProvider = new AesCryptoServiceProvider())
                 {
+                    aesProvider.Mode = CipherMode.CBC;
+                    aesProvider.Padding = PaddingMode.PKCS7;
                     using (CryptoStream cryptoStream = new CryptoStream(mstream, aesProvider.CreateEncryptor(key, IV), CryptoStreamMode.Write))
                     {
                         cryptoStream.Write(source, 0, source.Length);
@@ -74,7 +76,7 @@ namespace TINtest
 
         public byte[] Decrypt(byte[] sorce, byte[] key, byte[] IV)
         {
-          
+
             byte[] result;
             int count;
             using (MemoryStream mStream = new MemoryStream(sorce))
@@ -82,6 +84,7 @@ namespace TINtest
                 using (AesCryptoServiceProvider aesProvider = new AesCryptoServiceProvider())
                 {
                     aesProvider.Mode = CipherMode.CBC;
+                    aesProvider.Padding = PaddingMode.PKCS7;
                     using (CryptoStream cryptoStream = new CryptoStream(mStream,
                     aesProvider.CreateDecryptor(key, IV), CryptoStreamMode.Read))
                     {

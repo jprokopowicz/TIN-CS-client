@@ -10,12 +10,14 @@ namespace TIN
     {
         private IPAddress address;
         private int port;
-        PictureBox recivedImage;
+        private PictureBox recivedImage;
 
         private Thread reciveThread;
         private Connection connection;
         private Encryptor encryptor;
-
+        //
+        Boolean disconnected;
+        //
         public ConnectionMenager(IPAddress address_, int port_, PictureBox recivedImage_)
         {
             address = address_;
@@ -23,6 +25,9 @@ namespace TIN
             recivedImage = recivedImage_;
             connection = new Connection(address,port);
             encryptor = new Encryptor();
+            //
+            disconnected = false;
+            //
         }
         public void Connect()
         {
@@ -31,6 +36,7 @@ namespace TIN
             try
             {
                 connection.Connect();
+                disconnected = false;
                 reciveThread.Start();
             }
             catch(Exception exc)
@@ -43,11 +49,14 @@ namespace TIN
         {
             try
             {
+                disconnected = true;
                 connection.Disconnect();
+                //reciveThread.Interrupt();
             }
             catch(Exception e)
             {
-                MessageBox.Show("disconnect error: " + e.Message);
+                if (!disconnected)
+                    MessageBox.Show("disconnect error: " + e.Message);
             }
         }
 
@@ -58,10 +67,12 @@ namespace TIN
             var keyData = encryptor.GetKey();
 
             var buffer = DataConverter.ConvertToBuffer(image);
-
+           
             var encriptedBuffer = encryptor.Encrypt(buffer, keyData.Item1, keyData.Item2);
 
             ///
+            MessageBox.Show(encriptedBuffer.Length.ToString());
+
             connection.Send(encriptedBuffer);
         }
 
@@ -91,7 +102,8 @@ namespace TIN
             }
             catch (Exception exc)
             {
-                MessageBox.Show("recive thread exception: " + exc.Message);
+                if(!disconnected)
+                    MessageBox.Show("recive thread exception: " + exc.Message);
             }
         }
 

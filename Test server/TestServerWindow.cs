@@ -55,7 +55,7 @@ namespace TINtest
             }
             catch (Exception exc)
             {
-                MessageBox.Show("Invalide port: " + exc.Message);
+                MessageBox.Show("server: Invalide port: " + exc.Message);
                 launched = false;
             }
 
@@ -64,22 +64,22 @@ namespace TINtest
                 EndPoint endPoint = new IPEndPoint(IPAddress.Parse(GetLocalIPAddress()), port);
                 socket.Bind(endPoint);
                 socket.Listen(1);
-                MessageBox.Show("server launched");
+                MessageBox.Show("server: server launched");
             }
             catch (Exception exc)
             {
-                MessageBox.Show("Binding error: " + exc.Message);
+                MessageBox.Show("server: Binding error: " + exc.Message);
                 launched = false;
             }
 
             try
             {
                 connctionSocket = socket.Accept();
-                MessageBox.Show("accept!");
+                MessageBox.Show("server: accept!");
             }
             catch(Exception exc)
             {
-                MessageBox.Show("accept error: " + exc.Message);
+                MessageBox.Show("server: accept error: " + exc.Message);
             }
             
             while (true)
@@ -91,12 +91,14 @@ namespace TINtest
 
                     if (n == 0)
                     {
-                        MessageBox.Show("client disconnected");
                         socket.Close();
                         connctionSocket.Close();
+                        MessageBox.Show("server: client disconnected");
                         launched = false;
                         break;
                     }
+                    MessageBox.Show("server: recived " + n + " bytes");
+
                     ///
                     Encryptor encryptor = new Encryptor();
 
@@ -106,9 +108,14 @@ namespace TINtest
 
                     var decryptedBuffer = encryptor.Decrypt(encriptedBuffor, keyData.Item1, keyData.Item2);
                     ///
-                    Image image = DataConverter.ConvertToImage(decryptedBuffer);
-                    pictureBox1.Image = image;
-                    MessageBox.Show("recived " + n + " bytes");
+                    try
+                    {
+                        Image image = DataConverter.ConvertToImage(decryptedBuffer);
+                        pictureBox1.Image = image;
+                   
+                    }
+                    catch (Exception exc1) { MessageBox.Show("server:"+ exc1.Message); }
+                    pictureBox1.Refresh();
 
                     byte[] toSendBuffer = encryptor.Encrypt(decryptedBuffer, keyData.Item1, keyData.Item2);
 
@@ -116,7 +123,7 @@ namespace TINtest
                 }
                 catch (Exception exc)
                 {
-                    MessageBox.Show("Recive excepton: " + exc.Message);
+                    MessageBox.Show("server: Recive excepton: " + exc.Message);
                     socket.Close();
                     launched = false;
                     break;
