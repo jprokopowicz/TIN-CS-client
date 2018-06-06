@@ -15,6 +15,7 @@ namespace TIN
             address = address_;
             port = port_;
             socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            
         }
 
         public void Connect()
@@ -30,8 +31,10 @@ namespace TIN
 
         public void Disconnect()
         {
-            socket.Shutdown(SocketShutdown.Both);
-            socket.Disconnect(true);
+            socket.Shutdown(SocketShutdown.Receive);
+            socket.Close(1000);
+            //socket.Disconnect(true);
+            
         }
 
         public int Send(byte[] buffer)
@@ -54,8 +57,8 @@ namespace TIN
             do
             {
                 int recived = socket.Receive(reciveBuffer);
-                
-
+                if (recived == 0)
+                    return 0;
                 if (!waitingForTheRest)
                 {
                     byte[] header = DataConverter.CopyAndCutBuffer(reciveBuffer, 4);
@@ -66,7 +69,7 @@ namespace TIN
                 if (!DataConverter.CopyBuffer(reciveBuffer, buffer, 4, n, recived))
                     throw new Exception("Message too large");
                 n += recived;
-                waitingForTheRest = (n-4) != numOfSentBytes && recived != 0;
+                waitingForTheRest = (n - 4) != numOfSentBytes;//&& recived != 0;
             } while (waitingForTheRest);
             return n-4;
         }

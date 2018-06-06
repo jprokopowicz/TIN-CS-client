@@ -87,16 +87,45 @@ namespace TINtest
                 try
                 {
                     byte[] buffor = new byte[DataConverter.maxSize];
-                    int n = connctionSocket.Receive(buffor);
+                    byte[] recivedBuffor = new byte[DataConverter.maxSize];
+                    bool waitingForTheRest = false;
+                    int n = 0;
+                    int numOfSentBytes = 0;
 
-                    if (n == 0)
+
+                    do
                     {
-                        socket.Close();
-                        connctionSocket.Close();
-                        MessageBox.Show("server: client disconnected");
-                        launched = false;
-                        break;
-                    }
+                        int recived = connctionSocket.Receive(recivedBuffor);
+
+                        if (recived == 0)
+                        {
+                            socket.Close();
+                            connctionSocket.Close();
+                            MessageBox.Show("server: client disconnected");
+                            launched = false;
+                            break;
+                        }
+
+                        if (!waitingForTheRest)
+                        {
+                            byte[] header = DataConverter.CopyAndCutBuffer(recivedBuffor, 4);
+                            int netOrderedBytes = BitConverter.ToInt32(header,0);
+                            numOfSentBytes = IPAddress.NetworkToHostOrder(netOrderedBytes);
+                        }
+
+                        if (!DataConverter.CopyBuffer(recivedBuffor, buffor, 4, n, recived))
+                        {
+                            continue;
+                            throw new Exception("Message too large");
+                        }
+
+                        n += recived;
+
+                        waitingForTheRest = (n - 4) != numOfSentBytes;
+
+                    } while (waitingForTheRest);
+                    n -= 4;
+                    
                     MessageBox.Show("server: recived " + n + " bytes");
 
                     ///
@@ -104,7 +133,7 @@ namespace TINtest
 
                     var keyData = encryptor.GetKey();
 
-                    var encriptedBuffor = DataConverter.CopyBuffer(buffor, n);
+                    var encriptedBuffor = DataConverter.CopyAndCutBuffer(buffor, n);
 
                     var decryptedBuffer = encryptor.Decrypt(encriptedBuffor, keyData.Item1, keyData.Item2);
                     ///
@@ -119,7 +148,15 @@ namespace TINtest
 
                     byte[] toSendBuffer = encryptor.Encrypt(decryptedBuffer, keyData.Item1, keyData.Item2);
 
-                    connctionSocket.Send(toSendBuffer);
+                    numOfSentBytes = toSendBuffer.Length;
+
+                    int netOrderedNumber = IPAddress.HostToNetworkOrder(numOfSentBytes);
+                    byte[] sendHeader = BitConverter.GetBytes(netOrderedNumber);
+                    byte[][] buffersList = { sendHeader, toSendBuffer };
+                    byte[] toSend = DataConverter.ConnectBuffors(buffersList, 2);
+                    
+
+                    connctionSocket.Send(toSend);
                 }
                 catch (Exception exc)
                 {
