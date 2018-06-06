@@ -66,7 +66,7 @@ namespace TIN
                     numOfSentBytes = IPAddress.NetworkToHostOrder(netOrderedNumber);
                 }
 
-                if (!DataConverter.CopyBuffer(reciveBuffer, buffer, 4, n, recived))
+                if (!DataConverter.CopyBuffer(reciveBuffer, buffer, waitingForTheRest ? 0 : 4, Math.Max(0,n-4) , recived - (waitingForTheRest ? 0 : 4)))
                     throw new Exception("Message too large");
                 n += recived;
                 waitingForTheRest = (n - 4) != numOfSentBytes;//&& recived != 0;
