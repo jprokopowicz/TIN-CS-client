@@ -92,7 +92,7 @@ namespace TIN
                     }
 
                     var keyData = encryptor.GetKey();
-                    var encryptedBuffer = DataConverter.CopyBuffer(buffer, n);
+                    var encryptedBuffer = DataConverter.CopyAndCutBuffer(buffer, n);
                     var decryptedBuffer = encryptor.Decrypt(encryptedBuffer, keyData.Item1, keyData.Item2);
 
                     recivedImage.Image = DataConverter.ConvertToImage(decryptedBuffer);

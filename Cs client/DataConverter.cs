@@ -35,7 +35,18 @@ namespace TIN
             }
         }
 
-        public static byte[] CopyBuffer(byte[] sorce, int size)
+        public static bool CopyBuffer(byte[] from, byte[] to, int startingIndexFrom, int stratingIndexTo, int amount) {
+
+            if (startingIndexFrom + amount - 1 >= from.Length && stratingIndexTo + amount - 1 >= to.Length)
+                return false;
+            for (int i = 0 ; i < amount ; ++i)
+            {
+                to[stratingIndexTo + i] = from[startingIndexFrom + i];
+            }
+            return true;
+        }
+
+        public static byte[] CopyAndCutBuffer(byte[] sorce, int size)
         {
             byte[] result = new byte[size];
             for (int i = 0; i < size; ++i)
@@ -44,6 +55,8 @@ namespace TIN
             }
             return result;
         }
+
+
 
         public static byte[] ConnectBuffors(byte[][] sorce, int amount)
         {

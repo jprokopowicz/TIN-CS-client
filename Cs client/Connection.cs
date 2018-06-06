@@ -36,13 +36,41 @@ namespace TIN
 
         public int Send(byte[] buffer)
         {
-            return socket.Send(buffer);
+            int numOfSentBytes = buffer.Length;
+            int netOrderedNumber = IPAddress.HostToNetworkOrder(numOfSentBytes);
+            byte[] header = BitConverter.GetBytes(netOrderedNumber);
+            byte[][] buffersList = { header , buffer };
+            byte[] toSend = DataConverter.ConnectBuffors(buffersList, 2);
+            return socket.Send(toSend);
+            //return socket.Send(buffer);
         }
 
         public int Recive(byte[] buffer)
         {
-            return socket.Receive(buffer);
+            byte[] reciveBuffer = new byte[DataConverter.maxSize];
+            bool waitingForTheRest = false;
+            int n = 0;
+            int numOfSentBytes = 0;
+            do
+            {
+                int recived = socket.Receive(reciveBuffer);
+                
+
+                if (!waitingForTheRest)
+                {
+                    byte[] header = DataConverter.CopyAndCutBuffer(reciveBuffer, 4);
+                    int netOrderedNumber = BitConverter.ToInt32(header, 0);
+                    numOfSentBytes = IPAddress.NetworkToHostOrder(netOrderedNumber);
+                }
+
+                if (!DataConverter.CopyBuffer(reciveBuffer, buffer, 4, n, recived))
+                    throw new Exception("Message too large");
+                n += recived;
+                waitingForTheRest = (n-4) != numOfSentBytes && recived != 0;
+            } while (waitingForTheRest);
+            return n-4;
         }
+
         public static string GetLocalIPAddress()
         {
             IPHostEntry host;
