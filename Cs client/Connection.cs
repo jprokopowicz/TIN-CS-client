@@ -4,6 +4,9 @@ using System;
 
 namespace TIN
 {
+    /// <summary>
+    /// Uses sockets for connections operations.
+    /// </summary>
     public class Connection
     {
         Socket socket;
@@ -31,9 +34,8 @@ namespace TIN
 
         public void Disconnect()
         {
-            socket.Shutdown(SocketShutdown.Receive);
+            socket.Shutdown(SocketShutdown.Both);
             socket.Close(1000);
-            //socket.Disconnect(true);
             
         }
 
@@ -45,7 +47,6 @@ namespace TIN
             byte[][] buffersList = { header , buffer };
             byte[] toSend = DataConverter.ConnectBuffors(buffersList, 2);
             return socket.Send(toSend);
-            //return socket.Send(buffer);
         }
 
         public int Recive(byte[] buffer)
@@ -69,7 +70,7 @@ namespace TIN
                 if (!DataConverter.CopyBuffer(reciveBuffer, buffer, waitingForTheRest ? 0 : 4, Math.Max(0,n-4) , recived - (waitingForTheRest ? 0 : 4)))
                     throw new Exception("Message too large");
                 n += recived;
-                waitingForTheRest = (n - 4) != numOfSentBytes;//&& recived != 0;
+                waitingForTheRest = (n - 4) != numOfSentBytes;
             } while (waitingForTheRest);
             return n-4;
         }

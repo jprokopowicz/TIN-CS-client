@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.button1 = new System.Windows.Forms.Button();
+            this.connectButton = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
@@ -38,13 +38,13 @@
             // 
             // OpenButton
             // 
-            this.button1.Location = new System.Drawing.Point(250, 150);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(100, 30);
-            this.button1.TabIndex = 0;
-            this.button1.Text = "connect";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.OpenButton_Click);
+            this.connectButton.Location = new System.Drawing.Point(250, 150);
+            this.connectButton.Name = "button1";
+            this.connectButton.Size = new System.Drawing.Size(100, 30);
+            this.connectButton.TabIndex = 0;
+            this.connectButton.Text = "connect";
+            this.connectButton.UseVisualStyleBackColor = true;
+            this.connectButton.Click += new System.EventHandler(this.OpenButton_Click);
             // 
             // label1
             // 
@@ -97,7 +97,7 @@
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.button1);
+            this.Controls.Add(this.connectButton);
             this.Name = "ConnectionFrom";
             this.Text = "Client ConnectionMenager";
             this.Load += new System.EventHandler(this.Form1_Load);
@@ -108,7 +108,7 @@
 
         #endregion
 
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button connectButton;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;

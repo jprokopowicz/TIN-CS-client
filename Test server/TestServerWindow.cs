@@ -81,7 +81,11 @@ namespace TINtest
             {
                 MessageBox.Show("server: accept error: " + exc.Message);
             }
-            
+
+            //System.Threading.Thread.Sleep(5000);
+            //socket.Close();
+            //Close();
+            //return;
             while (true)
             {
                 try
@@ -135,7 +139,7 @@ namespace TINtest
 
                     var encriptedBuffor = DataConverter.CopyAndCutBuffer(buffor, n);
 
-                    var decryptedBuffer = encryptor.Decrypt(encriptedBuffor, keyData.Item1, keyData.Item2);
+                    /*var decryptedBuffer = encryptor.Decrypt(encriptedBuffor, keyData.Item1, keyData.Item2);
                     ///
                     try
                     {
@@ -147,7 +151,10 @@ namespace TINtest
                     pictureBox1.Refresh();
 
                     byte[] toSendBuffer = encryptor.Encrypt(decryptedBuffer, keyData.Item1, keyData.Item2);
-
+                    */
+                    ///
+                    var toSendBuffer = encriptedBuffor;
+                    //
                     numOfSentBytes = toSendBuffer.Length;
 
                     int netOrderedNumber = IPAddress.HostToNetworkOrder(numOfSentBytes);

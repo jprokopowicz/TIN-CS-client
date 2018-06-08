@@ -6,6 +6,9 @@ using System.Drawing;
 
 namespace TIN
 {
+    /// <summary>
+    /// Cient window. Opens images to send and recives broadcasted ones.
+    /// </summary>
     public partial class Client : Form
     {
 
@@ -15,17 +18,11 @@ namespace TIN
 
         private Image toSendImage;
 
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        /// <param name="serverIP_"> server IP </param>
-        /// <param name="port_"> connManager port </param>
-        /// <param name="socket_"> connManager socket </param>
-        public Client(/*ConnectionMenager connManager_,*/ ConnectionFrom connForm_, IPAddress ip_, int port_)
+        public Client(ConnectionFrom connForm_, IPAddress ip_, int port_)
         {
             InitializeComponent();
 
-            connManager = new ConnectionMenager(ip_, port_, imageBox);
+            connManager = new ConnectionMenager(ip_, port_, imageBox,this);
             connManager.Connect();
             connForm = connForm_;
             toSendImage = null;
@@ -33,12 +30,12 @@ namespace TIN
             PortLabel.Text = port_.ToString();
             this.MaximizeBox = false;
         }
-
-        private void button1_Click(object sender, EventArgs e)
+       
+        private void openButton_Click(object sender, EventArgs e)
         {
             OpenFileDialog fileWindow = new OpenFileDialog();
             fileWindow.InitialDirectory = "C:\\";
-            fileWindow.Filter = "Image files (*.jpg, *.jpeg, *.jpe, *.jfif, *.png, *.bmp) | *.jpg; *.jpeg; *.jpe; *.jfif; *.png; *.bmp";
+            fileWindow.Filter = "Image files (*.jpg) | *.jpg";
             fileWindow.RestoreDirectory = true;
             fileWindow.ShowDialog();
             try
@@ -52,15 +49,15 @@ namespace TIN
                 
                 pictureNameLabel.Text = imagePath + "\\" + imageName; 
             }
-            catch(Exception exc)
+            catch
             {
-                //MessageBox.Show(exc.Message);
+
             }
         }
 
         private void Client_FormClosing(object sender, FormClosingEventArgs e)
         {
-            connManager.Disconnect();
+            connManager.Disconnect(false);
             connForm.Enabled = true;
         }
 
@@ -68,7 +65,7 @@ namespace TIN
         {
             try
             {
-                connManager.Disconnect();
+                connManager.Disconnect(false);
                 Close();
                 MessageBox.Show("disconnected");
             }
@@ -86,8 +83,6 @@ namespace TIN
         {
             try
             {
-               /* if (toSendImage == null)
-                    throw new Exception("No selected image");*/
                 connManager.Send(toSendImage);
             }
             catch(Exception exc)

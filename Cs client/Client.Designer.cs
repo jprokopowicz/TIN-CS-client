@@ -48,7 +48,7 @@ namespace TIN
             // 
             this.imageBox.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.imageBox.ErrorImage = ((System.Drawing.Image)(resources.GetObject("imageBox.ErrorImage")));
-            this.imageBox.InitialImage = global::Cs_client.Properties.Resources._0401_empty_Darrel_Austin;
+            this.imageBox.InitialImage = null;
             this.imageBox.Location = new System.Drawing.Point(30, 30);
             this.imageBox.Name = "imageBox";
             this.imageBox.Size = new System.Drawing.Size(512, 512);
@@ -64,7 +64,7 @@ namespace TIN
             this.openButton.TabIndex = 1;
             this.openButton.Text = "open";
             this.openButton.UseVisualStyleBackColor = true;
-            this.openButton.Click += new System.EventHandler(this.button1_Click);
+            this.openButton.Click += new System.EventHandler(this.openButton_Click);
             // 
             // sendButton
             // 

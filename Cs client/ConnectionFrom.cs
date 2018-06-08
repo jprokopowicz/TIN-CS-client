@@ -5,11 +5,13 @@ using System.Net;
 
 namespace TIN
 {
+    /// <summary>
+    /// Window chect connection data and establish connections
+    /// </summary>
     public partial class ConnectionFrom : Form
     {
         public ConnectionFrom()
         {
-            //this.MaximizeBox = false;
             InitializeComponent();
         }
         
@@ -24,7 +26,7 @@ namespace TIN
             String serverAddress;
             int port;
             IPAddress serverIP;
-            //ConnectionMenager connManager;
+
             try{
                 serverAddress = textBox1.Text;
                 if (serverAddress == "localhost")

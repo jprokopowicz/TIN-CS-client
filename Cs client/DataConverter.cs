@@ -4,6 +4,9 @@ using System.IO;
 
 namespace TIN
 {
+    /// <summary>
+    /// Converts images to bytes [] and vice varsa and preform basic operation on buffors.
+    /// </summary>
     static class DataConverter
     {
         public static int maxSize = 786486; 
@@ -55,8 +58,6 @@ namespace TIN
             }
             return result;
         }
-
-
 
         public static byte[] ConnectBuffors(byte[][] sorce, int amount)
         {

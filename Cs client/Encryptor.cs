@@ -5,6 +5,9 @@ using System.Windows.Forms;
 
 namespace TIN
 {
+    /// <summary>
+    /// Ecripts and decripts fuffers using the loaded key
+    /// </summary>
     class Encryptor
     {
         private static int keyLength = 16;
@@ -12,23 +15,6 @@ namespace TIN
 
         public Tuple<byte[], byte[]> GetKey()
         {
-
-            /*Aes newKey = Aes.Create();
-            return new Tuple<byte[], byte[]>(newKey.Key, newKey.IV);*/
-
-            /*byte[] key = new byte[keyLength];
-            byte[] IV = new byte[initVectorLength];
-
-            for(int i = 0; i < keyLength; ++i ) {
-                key[i] = 0b00000000;
-            }
-
-            for (int i = 0; i < initVectorLength; ++i)
-            {
-                IV[i] = 0b00000000;
-            }
-
-            return new Tuple<byte[], byte[]>(key, IV);*/
             byte[] key = new byte[keyLength];
             byte[] IV = new byte[initVectorLength];
             const string fileName = "../../Resources/key.bin";

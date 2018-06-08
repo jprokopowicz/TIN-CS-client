@@ -6,7 +6,7 @@ namespace TINtest
 {
     static class DataConverter
     {
-        public static int maxSize = 786486;
+        public static int maxSize = 819200;
 
         public static byte[] GenerateBuffer(int size)
         {
@@ -56,8 +56,6 @@ namespace TINtest
             }
             return result;
         }
-
-
 
         public static byte[] ConnectBuffors(byte[][] sorce, int amount)
         {

@@ -6,29 +6,32 @@ using System.Windows.Forms;
 
 namespace TIN
 {
+    /// <summary>
+    /// Manage sending and reciving messages. Creates recive thread. Uses connection as the lowest layer.
+    /// </summary>
     public class ConnectionMenager
     {
         private IPAddress address;
         private int port;
         private PictureBox recivedImage;
+        private Client window;
 
         private Thread reciveThread;
         private Connection connection;
         private Encryptor encryptor;
-        //
-        Boolean disconnected;
-        //
-        public ConnectionMenager(IPAddress address_, int port_, PictureBox recivedImage_)
+        private Boolean disconnected;
+
+        public ConnectionMenager(IPAddress address_, int port_, PictureBox recivedImage_, Client window_)
         {
             address = address_;
             port = port_;
             recivedImage = recivedImage_;
+            window = window_;
             connection = new Connection(address,port);
             encryptor = new Encryptor();
-            //
             disconnected = false;
-            //
         }
+
         public void Connect()
         {
 
@@ -45,13 +48,17 @@ namespace TIN
             }
         }
 
-        public void Disconnect()
+        public void Disconnect(bool close)
         {
             try
             {
                 disconnected = true;
                 connection.Disconnect();
-                //reciveThread.Interrupt();
+                if (close)
+                {
+                    MessageBox.Show("should close window");
+                    window.Close();
+                }
             }
             catch(Exception e)
             {
@@ -62,16 +69,12 @@ namespace TIN
 
         public void Send(Image image)
         {
-            ///
             Encryptor encryptor = new Encryptor();
             var keyData = encryptor.GetKey();
 
             var buffer = DataConverter.ConvertToBuffer(image);
            
             var encriptedBuffer = encryptor.Encrypt(buffer, keyData.Item1, keyData.Item2);
-
-            ///
-            MessageBox.Show(encriptedBuffer.Length.ToString());
 
             connection.Send(encriptedBuffer);
         }
@@ -87,7 +90,7 @@ namespace TIN
                     int n = connection.Recive(buffer);
                     if (n == 0)
                     {
-                        Disconnect();
+                        Disconnect(false);
                         break;
                     }
 
@@ -106,8 +109,5 @@ namespace TIN
                     MessageBox.Show("recive thread exception: " + exc.Message);
             }
         }
-
-
-        
     }
 }
